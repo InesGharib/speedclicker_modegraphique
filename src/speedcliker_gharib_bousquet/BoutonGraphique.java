@@ -28,12 +28,14 @@ public class BoutonGraphique extends JButton {
     @Override
     public void paintComponent(Graphics G) {
         super.paintComponent(G);
-          setIcon(img_boutoneteind);
-           if (BoutonAssociee.etreAllume == true){ // vidéo 4, 6min45 > conditions pour afficher un bouton allumé
+          setIcon(img_boutoneteind); // crée les différents boutons en mode graphique
+           if (BoutonAssociee.etreAllume == true){ 
                 setIcon(img_boutonallume);
                 }
             else {
-              setIcon(img_boutoneteind);  
+              
+               setIcon(img_boutoneteind);  
+               
                 }
         
      

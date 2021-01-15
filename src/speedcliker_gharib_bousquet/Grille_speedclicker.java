@@ -18,7 +18,8 @@ public class Grille_speedclicker {
     grilleDeBoutons = new Bouton[6][6]; // grille de 36 boutons 
         for (int i=0; i< 6; i++) {
             for (int j=0; j< 6; j++) {
-                grilleDeBoutons[i][j] = new Bouton (); // permet de placer un bouton dans chaque case de grille 
+                Bouton bouton = new Bouton(i,j);
+                grilleDeBoutons[i][j] = bouton; // permet de placer un bouton dans chaque case de grille 
                 }
         }
     }
@@ -33,28 +34,6 @@ public class Grille_speedclicker {
     grilleDeBoutons[x][y].Alummer_bouton();
     }
     
-    //public void eteindre_bouton(){ // permet d'éteindre le bouton sur lequel le joueur à cliquer 
-    
-    //grilleDeBoutons[x][y].Eteindre_bouton();
-
-    //}
-
-
-    public void afficherGrilleSurConsole() { //permet d'afficher la grille sur la console le bouton allumé est representé par R et les boutons éteint sont G 
-    for(int i = 0 ; i < 6 ; i++){
-        for(int j = 0 ; j < 6 ; j++){
-            if (grilleDeBoutons[i][j].etreAllume == true){ // si un des boutons de la case est allumé alors il s'affichera comme R dans la grille 
-                System.out.print("R");
-            }
-            else{
-            System.out.print("G");
-            }    
-                
-            }
-            System.out.println(); //affiche la grille sur la console 
-
-        }
-    }
 }
 
 

@@ -12,15 +12,14 @@ import java.util.Random;
  */
 public class Bouton {
 
-    boolean etreAllume; // definie l'état du bouton
-    //String couleur;
-    //String couleur_vide;
-
-    public Bouton(){ // constructeur de bouton
-
-    etreAllume = false; 
-     //couleur="R";
-     //couleur_vide ="G";
+    boolean etreAllume = false; // definie l'état du bouton
+    int x;
+    int y;
+ 
+    
+    public Bouton(int x, int y) { // à permis de debeuguer le code lorsque le bouton ne s'allumer pas quand on débutait la partie
+        this.x = x;
+        this.y= y;
     }
 
     public void Alummer_bouton(){// renvoie vrai si le bouton est allumer 
@@ -34,9 +33,5 @@ public class Bouton {
     
     }
     
-    //public String lirecouleurbouton(){
-        //return couleur;
-        
-    //}
  }
 

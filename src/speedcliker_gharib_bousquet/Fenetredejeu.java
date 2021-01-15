@@ -17,8 +17,6 @@ import java.util.TimerTask;
 public class Fenetredejeu extends javax.swing.JFrame {
 
     int Compteur = 0;
-    Grille_speedclicker GrilleDeJeu = new Grille_speedclicker();
-    Bouton [][] grilleDeBoutons;
     Partie_speedclicker une_partie = new Partie_speedclicker();
     
     public Fenetredejeu() {
@@ -27,14 +25,34 @@ public class Fenetredejeu extends javax.swing.JFrame {
         panneau_scorejoueur.setVisible(false);
         panneau_timer.setVisible(false);
 
-        for (int i = 5; i >=0 ; i--) {
+
+        for (int i = 5; i >=0 ; i--) { // construit la grille en graphique en utlisant la grille de partie qui est composé d'une grille de bouton 
             for (int j = 0; j <= 5; j++) {
-                BoutonGraphique boutonGraph = new BoutonGraphique(GrilleDeJeu.grilleDeBoutons[i][j]); // pb à voir quoi mettre en paramètre 
+                BoutonGraphique boutonGraph = new BoutonGraphique(une_partie.GrilleDeJeu.grilleDeBoutons[i][j]); 
                 panneau_grille.add(boutonGraph);
+                
+                boutonGraph.addActionListener((event) -> { // correspond aux différents évenement subi par le bouton comme par exemple lorsqu'il est cliqué
+                    BoutonCliqué(boutonGraph); // on utilise la méthode bouton cliqué de partie sur nos boutons graphiques 
+                });
+                
             }
 
         }
     }
+   
+    public void BoutonCliqué(BoutonGraphique bouton_cliqué) {                   
+            une_partie.ClicBouton(bouton_cliqué.BoutonAssociee);
+            lbl_Compteur.setText(une_partie.J1.Nom + " : " + une_partie.J1.Score);
+            if (une_partie.TempsRestant() == 1000){
+                message.setText("ATTENTION plus que 10 secondes");
+            }
+            else if (une_partie.TempsRestant() == 0){
+                message.setText("la partie est terminée");
+            }
+               
+            panneau_grille.repaint(); 
+ 
+ } 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,7 +148,7 @@ public class Fenetredejeu extends javax.swing.JFrame {
 
         lbl_Compteur.setFont(new java.awt.Font("Apple Braille", 0, 14)); // NOI18N
         lbl_Compteur.setText("Compteur");
-        panneau_scorejoueur.add(lbl_Compteur, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 70, 60));
+        panneau_scorejoueur.add(lbl_Compteur, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 140, 60));
 
         getContentPane().add(panneau_scorejoueur, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 470, 260, 120));
 
@@ -150,9 +168,9 @@ public class Fenetredejeu extends javax.swing.JFrame {
         message.setRows(5);
         jScrollPane2.setViewportView(message);
 
-        panneau_timer.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 240, 50));
+        panneau_timer.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 240, 90));
 
-        getContentPane().add(panneau_timer, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 270, 260, 120));
+        getContentPane().add(panneau_timer, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 270, 260, 170));
 
         btl_ligne6.setText("6");
         btl_ligne6.setToolTipText("");
@@ -257,9 +275,9 @@ public class Fenetredejeu extends javax.swing.JFrame {
         
         panneau_scorejoueur.setVisible(true);
         panneau_timer.setVisible(true);
-        debut_partie(); 
-        panneau_grille.repaint();
+        debuter_partie(); 
         btn_start.setEnabled(false);
+        panneau_grille.repaint();
     }//GEN-LAST:event_btn_startActionPerformed
 
     private void btl_ligne6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btl_ligne6ActionPerformed
@@ -338,39 +356,32 @@ public class Fenetredejeu extends javax.swing.JFrame {
         });
     }
 
-        public void debut_partie() {
+    public void debuter_partie() {
        
-        String nomJoueur1 = nom_joueur1.getText();
-        Joueur J1 = new Joueur(nomJoueur1);
+        String nomJoueur1 = nom_joueur1.getText();// recuperer le nom du joueur    
+        une_partie.debut_partie(nomJoueur1);
+        
+        lbl_Compteur.setText(une_partie.J1.Nom + " : " + une_partie.J1.Score);// mise à jour du compteur
+        message.setText("c'est partie !!!");
 
-        une_partie.GrilleDeJeu.allumer_BoutonAleatoire();
-        une_partie.GrilleDeJeu.afficherGrilleSurConsole();
+        
+        mise_à_jour_chrono();// mise en place du timer 
+
     }
+    
 
-        public void allumer_BoutonAleatoire() { // methode qui permet d'allumer un bouton choisit aléatoirement en rose
-        int x;
-        int y;
-        Random generateur = new Random();
-        x = generateur.nextInt(6);
-        y = generateur.nextInt(6);
-        System.out.println("x = " + x + " et y = " + y); // affiche les coordonnées du bouton allumé
-        grilleDeBoutons[x][y].Alummer_bouton();
-    }
-
-        public void afficherGrilleSurConsole() { //permet d'afficher la grille sur la console le bouton allumé est representé par R et les boutons éteint sont G 
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                if (grilleDeBoutons[i][j].etreAllume == true) { // si un des boutons de la case est allumé alors il s'affichera comme R dans la grille 
-                    System.out.print("R");
-                } else {
-                    System.out.print("G");
-                }
-
+    public void mise_à_jour_chrono() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                lbl_Timer.setText("" + une_partie.TempsRestant()/1000 + "s"); //met à jour le chrono à chaque 0,5 seconde
             }
-            System.out.println(); //affiche la grille sur la console 
-
-        }
+            
+        }, 0, 500);
     }
+
+
+       
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

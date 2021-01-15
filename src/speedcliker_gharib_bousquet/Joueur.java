@@ -12,10 +12,10 @@ package speedcliker_gharib_bousquet;
 public class Joueur {
     
      String Nom;
+     int Score = 0;
 
 
  Joueur(String nom_joueur){
-        Nom = nom_joueur;
-        
+        Nom = nom_joueur;     
  }
 }
